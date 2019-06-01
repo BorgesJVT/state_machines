@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+  <node pkg="turtlesim" type="turtlesim_node" name="sim"/>
+
+  <node name="broadcaster_turtlesim" pkg="state_machines" type="broadcaster_turtlesim.py" respawn="false" output="screen" />
+
+  <node name="listener_turtlesim" pkg="state_machines" type="listener_turtlesim.py" output="screen" />
+
+</launch>
