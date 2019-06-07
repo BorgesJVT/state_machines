@@ -6,6 +6,8 @@ import rospy
 import tf
 import turtlesim.msg
 
+import random
+
 '''
     This secondary version of broadcaster splits the incoming data as event-driven
     in the callback function and send the tf's separately. 
@@ -47,3 +49,6 @@ tf.transformations.quaternion_from_euler(0, 0, theta),
         #print "You could also not use rospy.rate()/rate.sleep(), what means your data would be sent/published at asynchronous SO process rate!"
 
         rate.sleep()
+        # simulate some noise! This causes a bottleneck effect!
+        rospy.sleep(random.random())
+
