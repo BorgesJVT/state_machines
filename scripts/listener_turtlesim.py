@@ -13,9 +13,8 @@ if __name__ == '__main__':
     rospy.init_node('listener_turtlesim')
     listener = tf.TransformListener()
     velocity_publisher = rospy.Publisher('turtle1/cmd_vel', Twist, queue_size=1)
-    cmd = Twist(); cmd.linear.x = 0.1
 
-    timeout = 1.0
+    timeout = 0.048  # timeout here is chosen (arbitrarilly) 3 times "input msg interval", which is 1/62.5Hz = 0.016.  Then, 3 x 0.016 = 0.048
     rate = rospy.Rate(10.0)
     # The control of the State Machine is all done inside the following loop
     while not rospy.is_shutdown():
@@ -26,19 +25,31 @@ if __name__ == '__main__':
             now = rospy.Time()
             listener.waitForTransform("/world", "/tartaruga", now, rospy.Duration(timeout))
             (trans, rot) = listener.lookupTransform("/world", "/tartaruga", now)
-        except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+        #except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+        except:
+            rospy.loginfo("There is no transform!")
+
             continue
 
-        # settings STATES, which means SETS OF CONDITIONS
-        if(trans[0] < 6.0): state = 'A'
-        elif(trans[0] < 7.0): state = 'B'
-        else: state = 'off'
 
+        cmd = Twist()
         print 'trans[0]: ', trans[0]
-        print 'trans[1]: ', trans[1]
-        print 'state: ', state
-        velocity_publisher.publish(cmd)
 
+        # settings STATES, which means SETS OF CONDITIONS
+        if(trans[0] < 6.0): 
+            #state = 'A'
+            cmd.linear.x = 0.1
+            cmd.angular.z = 0.0
+        elif(trans[0] < 7.5): 
+            #state = 'B'
+            cmd.linear.x = 0.1
+            cmd.angular.z = 0.03
+        else: 
+            #state = 'off'
+            cmd.linear.x = 0.0
+            cmd.angular.z = 0.1
+
+        velocity_publisher.publish(cmd)
         rate.sleep()
 
 
