@@ -6,6 +6,13 @@ import rospy
 import tf
 import turtlesim.msg
 
+'''
+    This secondary version of broadcaster splits the incoming data as event-driven
+    in the callback function and send the tf's separately. 
+    The advantage of doing this is that you can set a different 
+    frequency rate (minor, major,...).
+'''
+
 x = 0
 y = 0
 theta = 0
